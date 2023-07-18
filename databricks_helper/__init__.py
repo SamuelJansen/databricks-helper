@@ -19,6 +19,9 @@ from databricks_helper.api.src.basic_code import (
     TimestampType,
     Decimal,
 
+    DataFrame,
+    SparkSession,
+
     two_digits_prefixed_with_zeros_as_string,
     remove_leading_zeros,
     build_first_month_date_given_date_as_string_list,

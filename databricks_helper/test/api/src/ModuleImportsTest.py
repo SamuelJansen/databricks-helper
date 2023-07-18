@@ -25,6 +25,9 @@ def databricks_helper_imorts():
         TimestampType,
         Decimal,
 
+        DataFrame,
+        SparkSession,
+
         two_digits_prefixed_with_zeros_as_string,
         build_first_month_date_given_date_as_string_list,
         get_first_month_date,
@@ -74,11 +77,11 @@ def databricks_helper_imorts():
         save_as_table
     )
 
-    print(get_spark_session())
-    print(get_display_spark_dataframe_caller())
+    assert get_spark_session() is None, get_spark_session()
+    assert get_display_spark_dataframe_caller() is None, get_display_spark_dataframe_caller()
 
     set_default_spark_session('spark_session')
-    set_default_display_spark_dataframe('set_default_display_spark_dataframe')
+    set_default_display_spark_dataframe('display_spark_dataframe')
 
-    print(get_spark_session())
-    print(get_display_spark_dataframe_caller())
+    assert 'spark_session' == get_spark_session(), get_spark_session()
+    assert 'display_spark_dataframe' == get_display_spark_dataframe_caller(), get_display_spark_dataframe_caller()

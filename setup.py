@@ -3,7 +3,7 @@ import os
 
 OS_SEPARATOR = os.path.sep
 
-version = '0.0.6'
+version = '0.0.7'
 name = 'databricks_helper'
 packageName = name
 repositoryName = name.replace("_", "-")
@@ -26,7 +26,7 @@ setup(
     download_url = f'{url}archive/v{version}.tar.gz',
     keywords = ['helper', 'databricks helper package', 'databricks helper', 'helper package'],
     install_requires = [
-        'pyspark<4.0.0,>=3.0.0',
+        'pyspark<4.0.0,>=2.0.0',
         'python_helper<1.0.0,>=0.3.67'
     ],
     classifiers = [

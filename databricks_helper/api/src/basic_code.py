@@ -2,8 +2,13 @@ from python_helper import DateTimeHelper, StringHelper, Constant, ObjectHelper, 
 
 from decimal import Decimal
 
-from pyspark.sql.dataframe import DataFrame
-from pyspark.sql import SparkSession
+try:
+    from pyspark.sql.dataframe import DataFrame
+    from pyspark.sql import SparkSession
+except Exception as exception:
+    print(exception)
+    DataFrame = None
+    SparkSession = None
 from pyspark.sql.functions import col as spark_col
 from pyspark.sql.functions import sum as spark_sum
 from pyspark.sql.functions import round as spark_round
@@ -29,6 +34,9 @@ IntegerType = IntegerType
 DateType = DateType
 TimestampType = TimestampType
 Decimal = Decimal
+
+DataFrame = DataFrame
+SparkSession = SparkSession
 
 
 def set_default_spark_session(spark_session):
