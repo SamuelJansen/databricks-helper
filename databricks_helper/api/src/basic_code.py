@@ -114,14 +114,14 @@ def get_distinct_and_ordered(given_list):
     return ObjectHelper.deepSort(list(set(given_list)))
 
 
-def query_value_as_string_is_not_null(query_value_as_string):
+def query_value_as_string_is_not_null(query_value_as_string) -> bool:
     return (
         not query_value_as_string == NULL_QUERY and 
         query_value_as_string is not None
     )
 
 
-def get_query_value_or_null(given_query_value):
+def get_query_value_or_null(given_query_value: str) -> str:
     return given_query_value if ObjectHelper.isNotNone(given_query_value) else NULL_QUERY
 
 
@@ -129,23 +129,23 @@ def print_attribute(attribute_name, attribute_value):
     print(f'''{attribute_name}: {attribute_value}''')
 
 
-def get_monetary_decimal_type():
+def get_monetary_decimal_type() -> DecimalType:
     return DecimalType(32, 2)
 
 
-def get_percentual_decimal_type():
+def get_percentual_decimal_type() -> DecimalType:
     return DecimalType(32, 4)
 
 
-def to_monetary_decimal(float_value):
+def to_monetary_decimal(float_value: float) -> Decimal:
     return Decimal(float_value).quantize(Decimal('.01'))
                                          
 
-def to_percentual_decimal(float_value):
+def to_percentual_decimal(float_value: float) -> Decimal:
     return Decimal(float_value).quantize(Decimal('.0001'))
 
 
-def parse_column_name(column_name):
+def parse_column_name(column_name: str) -> str:
     parsed_column_name = column_name.lower()
     parsed_column_name = parsed_column_name.replace('(-)', 'menos').replace(' ', '_').replace('-', '_')
     parsed_column_name = parsed_column_name.replace('%', 'percentual')
@@ -167,16 +167,15 @@ def parse_column_name(column_name):
     return parsed_column_name
 
 
-def wrap_column_name(column_name):
+def wrap_column_name(column_name: str) -> str:
     return f'`{column_name}`'
 
 
-def to_query_string_value(value):
+def to_query_string_value(value) -> str:
     return value if str(value).startswith(Constant.SINGLE_QUOTE) else f'{Constant.SINGLE_QUOTE}{value}{Constant.SINGLE_QUOTE}'
 
 
 def date_to_query_date(given_date):
-    ###- f'{Constant.SINGLE_QUOTE}{given_date}{Constant.SINGLE_QUOTE}'
     return to_query_string_value(given_date) 
 
 
