@@ -28,12 +28,13 @@ def get_spark_session(spark_session: SparkSession = None) -> SparkSession:
     if ObjectHelper.isNotNone(spark_session):
         return spark_session
     try:
-        global spark
-        return spark
+        global db_spark
+        return db_spark
     except Exception as exception:
         print(exception)
-        spark = None
-        return spark
+        print(f'''global db_spark
+db_spark = spark''')
+    return None
 
 
 spark = get_spark_session()
@@ -41,12 +42,13 @@ spark = get_spark_session()
 
 def get_display_spark_dataframe_caller():
     try:
-        global display
-        return display
+        global db_display
+        return db_display
     except Exception as exception:
         print(exception)
-        display = None
-        return display
+        print(f'''global db_display
+db_display = display''')
+    return None
 
 
 display_spark_dataframe_caller = get_display_spark_dataframe_caller()
