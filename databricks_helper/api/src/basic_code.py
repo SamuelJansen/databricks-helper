@@ -10,6 +10,10 @@ from pyspark.sql.functions import round as spark_round
 from pyspark.sql.types import StructType, StructField, StringType, DoubleType, DecimalType, IntegerType, DateType, TimestampType
 
 
+DB_SPARK_SESSION = 'default spark session'
+DB_SPARK_DF_DISPLAY = 'default spark dataframe display'
+
+
 spark_col = spark_col
 spark_sum = spark_sum
 spark_round = spark_round
@@ -28,32 +32,25 @@ def get_spark_session(spark_session: SparkSession = None) -> SparkSession:
     if ObjectHelper.isNotNone(spark_session):
         return spark_session
     try:
-        global db_spark
-        return db_spark
+        return DB_SPARK_SESSION
     except Exception as exception:
         print(exception)
-        print(f'''global db_spark
-db_spark = spark''')
+        print(f'''databricks_helper.DB_SPARK_SESSION = spark''')
     return None
 
 
 spark = get_spark_session()
 
 
-def get_display_spark_dataframe_caller(display_spark_df = None):
-    if ObjectHelper.isNotNone(display_spark_df):
-        return display_spark_df
+def get_display_spark_dataframe_caller(spark_df_display = None):
+    if ObjectHelper.isNotNone(spark_df_display):
+        return spark_df_display
     try:
-        global db_display
-        return db_display
+        return DB_SPARK_DF_DISPLAY
     except Exception as exception:
         print(exception)
-        print(f'''global db_display
-db_display = display''')
+        print(f'''databricks_helper.DB_SPARK_DF_DISPLAY = display''')
     return None
-
-
-display_spark_dataframe_caller = get_display_spark_dataframe_caller()
 
 
 def two_digits_prefixed_with_zeros_as_string(day_as_int):
@@ -328,9 +325,9 @@ def get_distinct_integer_collection_from_table_by_cd(integer_cd, table_name, cd_
         return []
 
 
-def display_spark_dataframe(spark_df: DataFrame, *args, **kwargs) -> DataFrame:
+def display_spark_dataframe(spark_df: DataFrame, *args, spark_df_display=None, **kwargs) -> DataFrame:
     ###- Here, display() is a builting function in databricks
-    display_spark_dataframe_caller(spark_df, *args, **kwargs)
+    get_display_spark_dataframe_caller(spark_df_display=spark_df_display)(spark_df, *args, **kwargs)
     return spark_df
 
 
@@ -340,10 +337,10 @@ def display_query(givenQuery: str, show_query=True) -> str:
     return givenQuery
 
 
-def spark_sql(*agrs, show_dataframe=True, spark_session: SparkSession = None, **kwargs) -> DataFrame:
+def spark_sql(*agrs, show_dataframe=True, spark_session: SparkSession = None, spark_df_display=None, **kwargs) -> DataFrame:
     df = get_spark_session(spark_session=spark_session).sql(display_query(*agrs, **kwargs))
     if show_dataframe:
-        display_spark_dataframe(df)
+        display_spark_dataframe(df, spark_df_display=spark_df_display)
     return df
 
 
@@ -363,12 +360,12 @@ def spark_spark_create_or_replace_temp_view_from_big_sql(*agrs, **kwargs) -> Dat
     return spark_big_sql(*agrs, spark_sql_caller=spark_create_or_replace_temp_view_from_sql, **kwargs)
     
 
-def spark_createDataFrame(*agrs, show_dataframe=True, order_by=None, spark_session: SparkSession = None, **kwargs) -> DataFrame:
+def spark_createDataFrame(*agrs, show_dataframe=True, order_by=None, spark_session: SparkSession = None, spark_df_display=None, **kwargs) -> DataFrame:
     df = get_spark_session(spark_session=spark_session).createDataFrame(*agrs, **kwargs)
     if ObjectHelper.isNotEmpty(order_by):
         df = df.orderBy(*order_by)
     if show_dataframe:
-        display_spark_dataframe(df)
+        display_spark_dataframe(df, spark_df_display=spark_df_display)
     return df
 
 
