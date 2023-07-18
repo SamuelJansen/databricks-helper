@@ -5,6 +5,10 @@ from python_helper import Test
 def databricks_helper_imorts():
 
     from databricks_helper import (
+
+        get_spark_session,
+        get_display_spark_dataframe_caller,
+
         spark_col,
         spark_sum,
         spark_round,
@@ -54,7 +58,6 @@ def databricks_helper_imorts():
         concat_query_date,
         get_distinct_integer_collection_from_table,
         get_distinct_integer_collection_from_table_by_cd,
-        get_spark_session,
         display_spark_dataframe,
         display_query,
         spark_sql,

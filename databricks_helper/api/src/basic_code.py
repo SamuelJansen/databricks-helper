@@ -40,7 +40,9 @@ db_spark = spark''')
 spark = get_spark_session()
 
 
-def get_display_spark_dataframe_caller():
+def get_display_spark_dataframe_caller(display_spark_df = None):
+    if ObjectHelper.isNotNone(display_spark_df):
+        return display_spark_df
     try:
         global db_display
         return db_display

@@ -3,7 +3,7 @@ import os
 
 OS_SEPARATOR = os.path.sep
 
-version = '0.0.2'
+version = '0.0.3'
 name = 'databricks_helper'
 packageName = name
 repositoryName = name.replace("_", "-")
