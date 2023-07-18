@@ -24,8 +24,37 @@ TimestampType = TimestampType
 Decimal = Decimal
 
 
+def get_spark_session(spark_session: SparkSession = None) -> SparkSession: 
+    if ObjectHelper.isNotNone(spark_session):
+        return spark_session
+    try:
+        global spark
+        return spark
+    except Exception as exception:
+        print(exception)
+        spark = None
+        return spark
+
+
+spark = get_spark_session()
+
+
+def get_display_spark_dataframe_caller():
+    try:
+        global display
+        return display
+    except Exception as exception:
+        print(exception)
+        display = None
+        return display
+
+
+display_spark_dataframe_caller = get_display_spark_dataframe_caller()
+
+
 def two_digits_prefixed_with_zeros_as_string(day_as_int):
     return f'{day_as_int:0>2}'
+
 
 
 ONE_MILION = 1000000
@@ -295,13 +324,9 @@ def get_distinct_integer_collection_from_table_by_cd(integer_cd, table_name, cd_
         return []
 
 
-def get_spark_session(spark_session: SparkSession = None) -> SparkSession: 
-    return spark_session if ObjectHelper.isNotNone(spark_session) else spark
-
-
 def display_spark_dataframe(spark_df: DataFrame, *args, **kwargs) -> DataFrame:
     ###- Here, display() is a builting function in databricks
-    display(spark_df, *args, **kwargs)
+    display_spark_dataframe_caller(spark_df, *args, **kwargs)
     return spark_df
 
 
