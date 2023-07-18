@@ -9,6 +9,9 @@ def databricks_helper_imorts():
         get_spark_session,
         get_display_spark_dataframe_caller,
 
+        set_default_spark_session,
+        set_default_display_spark_dataframe,
+
         spark_col,
         spark_sum,
         spark_round,
@@ -70,3 +73,12 @@ def databricks_helper_imorts():
         to_spark_df_override_delta_mode,
         save_as_table
     )
+
+    print(get_spark_session())
+    print(get_display_spark_dataframe_caller())
+
+    set_default_spark_session('spark_session')
+    set_default_display_spark_dataframe('set_default_display_spark_dataframe')
+
+    print(get_spark_session())
+    print(get_display_spark_dataframe_caller())

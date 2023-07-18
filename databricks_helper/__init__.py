@@ -3,6 +3,9 @@ from databricks_helper.api.src.basic_code import (
     get_spark_session,
     get_display_spark_dataframe_caller,
 
+    set_default_spark_session,
+    set_default_display_spark_dataframe,
+
     spark_col,
     spark_sum,
     spark_round,

@@ -9,11 +9,12 @@ from pyspark.sql.functions import sum as spark_sum
 from pyspark.sql.functions import round as spark_round
 from pyspark.sql.types import StructType, StructField, StringType, DoubleType, DecimalType, IntegerType, DateType, TimestampType
 
-global DB_SPARK_SESSION
-global DB_SPARK_DF_DISPLAY
 
-DB_SPARK_SESSION = 'default spark session'
-DB_SPARK_DF_DISPLAY = 'default spark dataframe display'
+global DB_SPARK_SESSION
+DB_SPARK_SESSION = None
+
+global DB_SPARK_DF_DISPLAY
+DB_SPARK_DF_DISPLAY = None
 
 
 spark_col = spark_col
@@ -30,11 +31,21 @@ TimestampType = TimestampType
 Decimal = Decimal
 
 
+def set_default_spark_session(spark_session):
+    global DB_SPARK_SESSION
+    DB_SPARK_SESSION = spark_session
+
+
+def set_default_display_spark_dataframe(spark_df_display):
+    global DB_SPARK_DF_DISPLAY
+    DB_SPARK_DF_DISPLAY = spark_df_display
+
+
 def get_spark_session(spark_session: SparkSession = None) -> SparkSession: 
     if ObjectHelper.isNotNone(spark_session):
         return spark_session
-    global DB_SPARK_SESSION
     try:
+        global DB_SPARK_SESSION
         return DB_SPARK_SESSION
     except Exception as exception:
         print(exception)
@@ -42,14 +53,12 @@ def get_spark_session(spark_session: SparkSession = None) -> SparkSession:
     return None
 
 
-spark = get_spark_session()
-
-
 def get_display_spark_dataframe_caller(spark_df_display = None):
     if ObjectHelper.isNotNone(spark_df_display):
         return spark_df_display
-    global DB_SPARK_DF_DISPLAY
+    # global DB_SPARK_DF_DISPLAY
     try:
+        global DB_SPARK_DF_DISPLAY
         return DB_SPARK_DF_DISPLAY
     except Exception as exception:
         print(exception)
