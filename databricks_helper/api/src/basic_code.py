@@ -9,6 +9,8 @@ from pyspark.sql.functions import sum as spark_sum
 from pyspark.sql.functions import round as spark_round
 from pyspark.sql.types import StructType, StructField, StringType, DoubleType, DecimalType, IntegerType, DateType, TimestampType
 
+global DB_SPARK_SESSION
+global DB_SPARK_DF_DISPLAY
 
 DB_SPARK_SESSION = 'default spark session'
 DB_SPARK_DF_DISPLAY = 'default spark dataframe display'
@@ -31,6 +33,7 @@ Decimal = Decimal
 def get_spark_session(spark_session: SparkSession = None) -> SparkSession: 
     if ObjectHelper.isNotNone(spark_session):
         return spark_session
+    global DB_SPARK_SESSION
     try:
         return DB_SPARK_SESSION
     except Exception as exception:
@@ -45,6 +48,7 @@ spark = get_spark_session()
 def get_display_spark_dataframe_caller(spark_df_display = None):
     if ObjectHelper.isNotNone(spark_df_display):
         return spark_df_display
+    global DB_SPARK_DF_DISPLAY
     try:
         return DB_SPARK_DF_DISPLAY
     except Exception as exception:
