@@ -71,7 +71,8 @@ from databricks_helper.api.src.basic_code import (
     spark_sql,
     spark_create_or_replace_temp_view_from_sql,
     spark_big_sql,
-    spark_spark_create_or_replace_temp_view_from_big_sql,
+    spark_create_or_replace_temp_view_from_big_sql,
+    spark_spark_create_or_replace_temp_view_from_big_sql, ###- deprecated
     spark_createDataFrame,
     override_table_and_schema,
     override_table,

@@ -9,10 +9,33 @@ except Exception as exception:
     print(exception)
     DataFrame = None
     SparkSession = None
-from pyspark.sql.functions import col as spark_col
-from pyspark.sql.functions import sum as spark_sum
-from pyspark.sql.functions import round as spark_round
-from pyspark.sql.types import StructType, StructField, StringType, DoubleType, DecimalType, IntegerType, DateType, TimestampType
+
+try:
+    from pyspark.sql.functions import col as spark_col
+    from pyspark.sql.functions import sum as spark_sum
+    from pyspark.sql.functions import round as spark_round
+except Exception as exception:
+    print(exception)
+    spark_col, spark_sum, spark_round = (
+        None, 
+        None, 
+        None
+    )
+
+try:
+    from pyspark.sql.types import StructType, StructField, StringType, DoubleType, DecimalType, IntegerType, DateType, TimestampType
+except Exception as exception:
+    print(exception)
+    StructType, StructField, StringType, DoubleType, DecimalType, IntegerType, DateType, TimestampType = (
+        None, 
+        None, 
+        None, 
+        None, 
+        None, 
+        None, 
+        None, 
+        None
+    )
 
 
 global DB_SPARK_SESSION
@@ -47,6 +70,20 @@ def set_default_spark_session(spark_session):
 def set_default_display_spark_dataframe(spark_df_display):
     global DB_SPARK_DF_DISPLAY
     DB_SPARK_DF_DISPLAY = spark_df_display
+
+
+try:
+    set_default_spark_session(spark)
+except Exception as exception:
+    print('Default "spark" session not loaded. Please run:')
+    print('set_default_spark_session(spark)')
+
+
+try :
+    set_default_display_spark_dataframe(display)
+except Exception as exception:
+    print('Default "display" function not loaded. Please run:')
+    print('set_default_display_spark_dataframe(display)')
 
 
 def get_spark_session(spark_session: SparkSession = None) -> SparkSession: 
@@ -377,7 +414,7 @@ def spark_big_sql(*agrs, spark_sql_caller=spark_sql, **kwargs):
     return df
 
 
-def spark_spark_create_or_replace_temp_view_from_big_sql(*agrs, **kwargs) -> DataFrame:
+def spark_create_or_replace_temp_view_from_big_sql(*agrs, **kwargs) -> DataFrame:
     return spark_big_sql(*agrs, spark_sql_caller=spark_create_or_replace_temp_view_from_sql, **kwargs)
     
 
@@ -406,3 +443,7 @@ def to_spark_df_override_delta_mode(spark_df):
 
 def save_as_table(spark_df_override_delta_mode, table_name):
     return spark_df_override_delta_mode.saveAsTable(table_name)
+
+
+###- deprecated\
+spark_spark_create_or_replace_temp_view_from_big_sql = spark_create_or_replace_temp_view_from_big_sql

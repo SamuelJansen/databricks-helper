@@ -3,7 +3,7 @@ from python_helper import Test
 
 @Test()
 def databricks_helper_imorts():
-
+    
     from databricks_helper import (
 
         ONE_MILION,
@@ -77,7 +77,7 @@ def databricks_helper_imorts():
         spark_sql,
         spark_create_or_replace_temp_view_from_sql,
         spark_big_sql,
-        spark_spark_create_or_replace_temp_view_from_big_sql,
+        spark_create_or_replace_temp_view_from_big_sql,
         spark_createDataFrame,
         override_table_and_schema,
         override_table,
