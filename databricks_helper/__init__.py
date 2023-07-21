@@ -63,6 +63,8 @@ from databricks_helper.api.src.basic_code import (
     cast_to_query_percentual_decimal,
     cast_to_query_monetary_decimal,
     cast_to_query_integer,
+    concat_query,
+    concat_dash_query,
     concat_query_date,
     get_distinct_integer_collection_from_table,
     get_distinct_integer_collection_from_table_by_cd,

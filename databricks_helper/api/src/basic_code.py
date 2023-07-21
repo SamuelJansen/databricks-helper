@@ -81,19 +81,16 @@ def set_default_display_spark_dataframe(spark_df_display):
     GLOBAL_VALUES[DB_SPARK_DF_DISPLAY_KEY] = spark_df_display
 
 
-
 try:
     set_default_spark_session(spark)
 except Exception as exception:
-    print('Default "spark" session not loaded. Please run:')
-    print('set_default_spark_session(spark)')
+    print('Default "spark" session not loaded. Please run:          set_default_spark_session(spark)')
 
 
 try :
     set_default_display_spark_dataframe(display)
 except Exception as exception:
-    print('Default "display" function not loaded. Please run:')
-    print('set_default_display_spark_dataframe(display)')
+    print('Default "display" function not loaded. Please run:       set_default_display_spark_dataframe(display)')
 
 
 def get_spark_session(spark_session: SparkSession = None) -> SparkSession: 
@@ -342,16 +339,28 @@ def cast_to_query_monetary_decimal(given_query):
 
 def cast_to_query_integer(given_query):
     return f'CAST({given_query} AS INT)'
+
+
+def concat_query(*args, separator=Constant.BLANK):
+    return f'''concat_ws('{separator}', {StringHelper.join(
+        [
+            arg
+            for arg in args
+        ],
+        character = Constant.COMA_SPACE
+    )})'''
+
+
+def concat_dash_query(*args):
+    return concat_query(*args, separator=Constant.DASH)
     
 
 def concat_query_date(year_column_name_or_value, month_column_name_or_value, day_column_name_or_value):
-    return f'''concat_ws('{Constant.DASH}', {
-        cast_to_query_integer(year_column_name_or_value)
-    }, lpad({
-        cast_to_query_integer(month_column_name_or_value)
-    }, 2, '0'), lpad({
-        cast_to_query_integer(day_column_name_or_value)
-    }, 2, '0'))'''
+    return concat_dash_query(
+        cast_to_query_integer(year_column_name_or_value),
+        f'''lpad({cast_to_query_integer(month_column_name_or_value)}, 2, {to_query_string_value('0')})''',
+        f'''lpad({cast_to_query_integer(day_column_name_or_value)}, 2, {to_query_string_value('0')})'''
+    )
 
 
 def get_distinct_integer_collection_from_table(table_name, column_name):
