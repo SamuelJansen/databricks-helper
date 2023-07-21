@@ -72,6 +72,7 @@ def databricks_helper_imorts():
         concat_query_date,
         get_distinct_integer_collection_from_table,
         get_distinct_integer_collection_from_table_by_cd,
+        query_distinct_collection,
         display_spark_dataframe,
         display_query,
         spark_sql,

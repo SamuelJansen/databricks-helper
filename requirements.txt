@@ -1,2 +1,3 @@
+pyspark<4.0.0,>=3.0.0
 python-helper<1.0.0,>=0.3.67
 globals<1.0.0,>=0.3.34

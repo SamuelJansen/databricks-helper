@@ -38,11 +38,18 @@ except Exception as exception:
     )
 
 
-global DB_SPARK_SESSION
-DB_SPARK_SESSION = None
+DB_SPARK_SESSION_KEY = 'DB_SPARK_SESSION'
+DB_SPARK_DF_DISPLAY_KEY = 'DB_SPARK_DF_DISPLAY'
+GLOBAL_VALUES = {
+    DB_SPARK_SESSION_KEY: None,
+    DB_SPARK_DF_DISPLAY_KEY: None
+}
 
-global DB_SPARK_DF_DISPLAY
-DB_SPARK_DF_DISPLAY = None
+# # global DB_SPARK_SESSION
+# DB_SPARK_SESSION = None
+
+# # global DB_SPARK_DF_DISPLAY
+# DB_SPARK_DF_DISPLAY = None
 
 
 spark_col = spark_col
@@ -63,13 +70,16 @@ SparkSession = SparkSession
 
 
 def set_default_spark_session(spark_session):
-    global DB_SPARK_SESSION
-    DB_SPARK_SESSION = spark_session
+    # global DB_SPARK_SESSION
+    # DB_SPARK_SESSION = spark_session
+    GLOBAL_VALUES[DB_SPARK_SESSION_KEY] = spark_session
 
 
 def set_default_display_spark_dataframe(spark_df_display):
-    global DB_SPARK_DF_DISPLAY
-    DB_SPARK_DF_DISPLAY = spark_df_display
+    # global DB_SPARK_DF_DISPLAY
+    # DB_SPARK_DF_DISPLAY = spark_df_display
+    GLOBAL_VALUES[DB_SPARK_DF_DISPLAY_KEY] = spark_df_display
+
 
 
 try:
@@ -90,8 +100,9 @@ def get_spark_session(spark_session: SparkSession = None) -> SparkSession:
     if ObjectHelper.isNotNone(spark_session):
         return spark_session
     try:
-        global DB_SPARK_SESSION
-        return DB_SPARK_SESSION
+        # global DB_SPARK_SESSION
+        # return DB_SPARK_SESSION
+        return GLOBAL_VALUES[DB_SPARK_SESSION_KEY]
     except Exception as exception:
         print(exception)
         print(f'''databricks_helper.DB_SPARK_SESSION = spark''')
@@ -101,10 +112,10 @@ def get_spark_session(spark_session: SparkSession = None) -> SparkSession:
 def get_display_spark_dataframe_caller(spark_df_display = None):
     if ObjectHelper.isNotNone(spark_df_display):
         return spark_df_display
-    # global DB_SPARK_DF_DISPLAY
     try:
-        global DB_SPARK_DF_DISPLAY
-        return DB_SPARK_DF_DISPLAY
+        # global DB_SPARK_DF_DISPLAY
+        # return DB_SPARK_DF_DISPLAY
+        return GLOBAL_VALUES[DB_SPARK_DF_DISPLAY_KEY]
     except Exception as exception:
         print(exception)
         print(f'''databricks_helper.DB_SPARK_DF_DISPLAY = display''')
@@ -381,6 +392,16 @@ def get_distinct_integer_collection_from_table_by_cd(integer_cd, table_name, cd_
     except Exception as exception:
         log.failure(get_distinct_integer_collection_from_table_by_cd, 'Not possible to extract collection. Returning empty collection by default', exception=exception, muteStackTrace=True)
         return []
+    
+
+def query_distinct_collection(column_name: str, view_or_table_name: str, by_column_name=None, by_column_value=None) -> DataFrame:
+    return spark_sql(f'''
+        SELECT DISTINCT {column_name} 
+        FROM {view_or_table_name} 
+        WHERE {
+            '1=1' if ObjectHelper.isNoneOrBlank(by_column_name) else f'({by_column_name} = f"{NULL_QUERY if ObjectHelper.isNone(by_column_value) else by_column_value}")'
+        } 
+        ORDER BY {column_name}''') 
 
 
 def display_spark_dataframe(spark_df: DataFrame, *args, spark_df_display=None, **kwargs) -> DataFrame:
