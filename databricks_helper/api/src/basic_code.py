@@ -286,6 +286,55 @@ def build_month_dash_day_query_from_date(given_date):
         ]
     )
 
+def is_empty_query(column_name):
+    return f'''({replace_if_empty_query(column_name, NULL_QUERY)} IS {NULL_QUERY})'''
+
+
+def is_not_empty_query(column_name):
+    return f'''NOT {is_empty_query(column_name)}'''
+
+
+def query_command_over_columns(*column_names, command=None):
+    return StringHelper.join(
+        [
+            command,
+            StringHelper.join([*column_names], character=Constant.COMA_SPACE)
+        ], 
+        character=Constant.SPACE
+    )
+
+
+def query_order_by(*column_names):
+    return query_command_over_columns(*column_names, command='ORDER BY')
+
+
+def query_group_by(*column_names):
+    return query_command_over_columns(*column_names, command='GROUP BY')
+    
+
+def query_replace(column_name_or_value, old_substring, new_substring):
+    return f'''REPLACE({column_name_or_value}, {old_substring}, {new_substring})'''
+
+
+def get_only_numbers_query(collumn_name_or_string):
+    return f'''regexp_extract({collumn_name_or_string}, '\\\\d+', 0)'''
+
+
+def remove_characters_query(collumn_name_or_string, *characters):
+    return f'''regexp_replace({collumn_name_or_string}, '[{StringHelper.join([*characters])}]', '')'''
+
+    
+def get_distinct_collection_from_table(table_name, column_name):
+    return spark_sql(f'''
+        SELECT
+            collect_set(tbl.{column_name}) AS collection_set
+        FROM {table_name} tbl
+    ''')
+
+
+def parse_dt_query(date_column_name):
+    return f'SUBSTRING({cast_to_query_string(date_column_name, 10)}, 0, 10)'
+
 
 def build_month_dash_day_query(date_column_name):
     # The idea here is to extract month dash day from a date:
@@ -297,6 +346,12 @@ def build_month_query(date_column_name):
     # The idea here is to extract month from a date:
     # Example: 2023-05-14 -> 05
     return f'SUBSTRING({cast_to_query_string(date_column_name, 10)}, 6, 2)'
+
+
+def build_year_dash_month(date_column_name):
+    # The idea here is to extract month dash day from a date:
+    # Example: 2023-05-14 -> 05-14
+    return f'SUBSTRING({cast_to_query_string(date_column_name, 10)}, 1, 7)'
 
 
 def list_to_query_in_integer_list(given_list):
@@ -339,6 +394,10 @@ def cast_to_query_monetary_decimal(given_query):
 
 def cast_to_query_integer(given_query):
     return f'CAST({given_query} AS INT)'
+
+
+def cast_to_query_big_integer(column_name):
+    return f'''CAST({column_name} AS BIGINT)'''
 
 
 def concat_query(*args, separator=Constant.BLANK):
@@ -401,16 +460,17 @@ def get_distinct_integer_collection_from_table_by_cd(integer_cd, table_name, cd_
     except Exception as exception:
         log.failure(get_distinct_integer_collection_from_table_by_cd, 'Not possible to extract collection. Returning empty collection by default', exception=exception, muteStackTrace=True)
         return []
-    
 
-def query_distinct_collection(column_name: str, view_or_table_name: str, by_column_name=None, by_column_value=None) -> DataFrame:
+
+def query_distinct_collection(column_name: str, view_or_table_name: str, condition='1=1', by_column_name=None, by_column_value=None) -> DataFrame:
     return spark_sql(f'''
         SELECT DISTINCT {column_name} 
         FROM {view_or_table_name} 
         WHERE {
-            '1=1' if ObjectHelper.isNoneOrBlank(by_column_name) else f'({by_column_name} = f"{NULL_QUERY if ObjectHelper.isNone(by_column_value) else by_column_value}")'
+            condition if ObjectHelper.isNoneOrBlank(by_column_name) else f'({by_column_name} = f"{NULL_QUERY if ObjectHelper.isNone(by_column_value) else by_column_value}")'
         } 
-        ORDER BY {column_name}''') 
+        ORDER BY {column_name}
+    ''')  
 
 
 def display_spark_dataframe(spark_df: DataFrame, *args, spark_df_display=None, **kwargs) -> DataFrame:
@@ -475,5 +535,3 @@ def save_as_table(spark_df_override_delta_mode, table_name):
     return spark_df_override_delta_mode.saveAsTable(table_name)
 
 
-###- deprecated\
-spark_spark_create_or_replace_temp_view_from_big_sql = spark_create_or_replace_temp_view_from_big_sql
